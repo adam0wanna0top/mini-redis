@@ -1,0 +1,18 @@
+{
+  // Node 直接运行 .ts（只擦除类型，不做编译）；tsc 只负责类型检查，不输出文件
+  "compilerOptions": {
+    "target": "ES2024",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "strict": true,
+    "noEmit": true,
+    // 只允许"能被直接擦掉"的 TS 语法（禁用 enum、namespace、构造函数参数属性等）
+    "erasableSyntaxOnly": true,
+    "verbatimModuleSyntax": true,
+    "allowImportingTsExtensions": true,
+    "noUncheckedIndexedAccess": true,
+    "types": ["node"],
+    "skipLibCheck": true
+  },
+  "include": ["src"]
+}
