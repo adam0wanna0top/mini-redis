@@ -8,17 +8,24 @@ import { Server } from "./server.ts";
 const port = Number(process.env.PORT ?? 6380);
 
 const server = new Server();
-await server.listen(port); // ES 模块允许顶层 await
+const t0 = performance.now();
+const p = server.listen(port);
+console.log("await 之前:", p);
+await p;
+const t1 = performance.now();
+console.log("await 之后:", p);
+console.log(`listen 耗时 ${(t1 - t0).toFixed(3)} ms`);
 console.log(`mini-redis listening on :${port}  (pid ${process.pid})`);
 console.log(`试试：nc localhost ${port}`);
 
 // Ctrl+C → SIGINT。相当于 C 里的 signal(SIGINT, handler)，
 // 但 handler 是在事件循环里被正常调用的，可以放心做任何事。
-process.on("SIGINT", async () => {
+process.on("SIGINT", async () => 
+{
   console.log("\n正在关闭...");
   await server.close();
   // 这里不用调用 process.exit()：所有连接和监听都关掉后，事件循环空了，进程自然退出。
   // 阶段 4 会在这里加上"先把 AOF 刷盘"。
 });
 
-console.log("—— main.ts 顶层代码执行完毕，但进程还活着 ——");
+console.log("事件循环中的资源:", process.getActiveResourcesInfo());
